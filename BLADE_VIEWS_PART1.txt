@@ -1,0 +1,183 @@
+====================================================================
+FILE: resources/views/auth/register.blade.php
+====================================================================
+@extends('layout')
+
+@section('content')
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card" style="width: 100%; max-width: 500px;">
+        <div class="card-body">
+            <h2 class="card-title text-center mb-4">📝 Create Account</h2>
+            
+            <form action="{{ route('register') }}" method="POST">
+                @csrf
+                
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name:</label>
+                    <input type="text" class="form-control @error('name') is-invalid @enderror" 
+                           id="name" name="name" value="{{ old('name') }}" required>
+                    @error('name')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                           id="email" name="email" value="{{ old('email') }}" required>
+                    @error('email')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                           id="password" name="password" required>
+                    <small class="text-muted d-block mt-1">
+                        Must contain: uppercase, lowercase, number, special character (@$!%*?&)
+                    </small>
+                    @error('password')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label for="password_confirmation" class="form-label">Confirm Password:</label>
+                    <input type="password" class="form-control" id="password_confirmation" 
+                           name="password_confirmation" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Register</button>
+            </form>
+
+            <hr>
+
+            <p class="text-center">
+                Already have an account? 
+                <a href="{{ route('login') }}">Login here</a>
+            </p>
+        </div>
+    </div>
+</div>
+@endsection
+
+
+====================================================================
+FILE: resources/views/dashboard.blade.php
+====================================================================
+@extends('layout')
+
+@section('content')
+<div class="row">
+    <div class="col-md-12">
+        <h1>Welcome to EMS! 👋</h1>
+        <p class="lead">Logged in as: <strong>{{ Auth::user()->name }}</strong></p>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">🏢 Departments</h5>
+                <a href="{{ route('departments.index') }}" class="btn btn-primary mt-3">Manage</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">👥 Employees</h5>
+                <a href="{{ route('employees.index') }}" class="btn btn-primary mt-3">Manage</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">💰 Salaries</h5>
+                <a href="{{ route('salaries.index') }}" class="btn btn-primary mt-3">Manage</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">📊 Reports</h5>
+                <a href="{{ route('reports.index') }}" class="btn btn-primary mt-3">View</a>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+
+====================================================================
+FILE: resources/views/departments/index.blade.php
+====================================================================
+@extends('layout')
+
+@section('content')
+<h1>Departments</h1>
+
+<a href="{{ route('departments.create') }}" class="btn btn-primary mb-3">+ Add New Department</a>
+
+<div class="card">
+    <div class="card-body">
+        @if ($departments->isEmpty())
+            <p class="text-muted">No departments found. <a href="{{ route('departments.create') }}">Create one</a></p>
+        @else
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Department Name</th>
+                        <th>Number of Employees</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($departments as $dept)
+                        <tr>
+                            <td>#{{ $dept->id }}</td>
+                            <td>{{ $dept->department_name }}</td>
+                            <td><span class="badge bg-info">{{ $dept->number_of_employees }}</span></td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+    </div>
+</div>
+@endsection
+
+
+====================================================================
+FILE: resources/views/departments/create.blade.php
+====================================================================
+@extends('layout')
+
+@section('content')
+<h1>Add New Department</h1>
+
+<div class="card" style="max-width: 500px;">
+    <div class="card-body">
+        <form action="{{ route('departments.store') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+                <label for="department_name" class="form-label">Department Name:</label>
+                <input type="text" class="form-control @error('department_name') is-invalid @enderror" 
+                       id="department_name" name="department_name" required>
+                @error('department_name')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+            <button type="submit" class="btn btn-primary">Save Department</button>
+            <a href="{{ route('departments.index') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+@endsection

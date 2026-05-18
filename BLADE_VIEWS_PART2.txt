@@ -1,0 +1,205 @@
+====================================================================
+FILE: resources/views/employees/index.blade.php
+====================================================================
+@extends('layout')
+
+@section('content')
+<h1>Employees</h1>
+
+<a href="{{ route('employees.create') }}" class="btn btn-primary mb-3">+ Add New Employee</a>
+
+<div class="card">
+    <div class="card-body">
+        @if ($employees->isEmpty())
+            <p class="text-muted">No employees found. <a href="{{ route('employees.create') }}">Add one</a></p>
+        @else
+            <table class="table table-hover table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Position</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Department</th>
+                        <th>Hire Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($employees as $emp)
+                        <tr>
+                            <td>#{{ $emp->id }}</td>
+                            <td>{{ $emp->first_name }} {{ $emp->last_name }}</td>
+                            <td>{{ $emp->position }}</td>
+                            <td>{{ $emp->email }}</td>
+                            <td>{{ $emp->telephone }}</td>
+                            <td>{{ $emp->department->department_name }}</td>
+                            <td>{{ $emp->hire_date }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+    </div>
+</div>
+@endsection
+
+
+====================================================================
+FILE: resources/views/employees/create.blade.php
+====================================================================
+@extends('layout')
+
+@section('content')
+<h1>Add New Employee</h1>
+
+<div class="card" style="max-width: 600px;">
+    <div class="card-body">
+        <form action="{{ route('employees.store') }}" method="POST">
+            @csrf
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="first_name" class="form-label">First Name:</label>
+                    <input type="text" class="form-control @error('first_name') is-invalid @enderror" 
+                           id="first_name" name="first_name" required>
+                    @error('first_name')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label for="last_name" class="form-label">Last Name:</label>
+                    <input type="text" class="form-control @error('last_name') is-invalid @enderror" 
+                           id="last_name" name="last_name" required>
+                    @error('last_name')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="gender" class="form-label">Gender:</label>
+                    <select class="form-control @error('gender') is-invalid @enderror" 
+                            id="gender" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    @error('gender')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="position" class="form-label">Position:</label>
+                    <input type="text" class="form-control @error('position') is-invalid @enderror" 
+                           id="position" name="position" required>
+                    @error('position')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" class="form-control @error('email') is-invalid @enderror" 
+                       id="email" name="email" required>
+                @error('email')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="mb-3">
+                <label for="telephone" class="form-label">Telephone:</label>
+                <input type="text" class="form-control @error('telephone') is-invalid @enderror" 
+                       id="telephone" name="telephone" required>
+                @error('telephone')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="hire_date" class="form-label">Hire Date:</label>
+                    <input type="date" class="form-control @error('hire_date') is-invalid @enderror" 
+                           id="hire_date" name="hire_date" required>
+                    @error('hire_date')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="department_id" class="form-label">Department:</label>
+                    <select class="form-control @error('department_id') is-invalid @enderror" 
+                            id="department_id" name="department_id" required>
+                        <option value="">Select Department</option>
+                        @foreach ($departments as $dept)
+                            <option value="{{ $dept->id }}">{{ $dept->department_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('department_id')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Employee</button>
+            <a href="{{ route('employees.index') }}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+@endsection
+
+
+====================================================================
+FILE: resources/views/salaries/index.blade.php
+====================================================================
+@extends('layout')
+
+@section('content')
+<h1>Salaries Management</h1>
+
+<a href="{{ route('salaries.create') }}" class="btn btn-primary mb-3">+ Add New Salary</a>
+
+<div class="card">
+    <div class="card-body">
+        @if ($salaries->isEmpty())
+            <p class="text-muted">No salary records found. <a href="{{ route('salaries.create') }}">Add one</a></p>
+        @else
+            <table class="table table-hover table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee Name</th>
+                        <th>Gross Salary</th>
+                        <th>Deduction</th>
+                        <th>Net Salary</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($salaries as $salary)
+                        <tr>
+                            <td>#{{ $salary->id }}</td>
+                            <td>{{ $salary->employee->first_name }} {{ $salary->employee->last_name }}</td>
+                            <td>Rs. {{ number_format($salary->gross_salary, 2) }}</td>
+                            <td>Rs. {{ number_format($salary->total_deduction, 2) }}</td>
+                            <td><strong>Rs. {{ number_format($salary->net_salary, 2) }}</strong></td>
+                            <td>
+                                <a href="{{ route('salaries.edit', $salary) }}" class="btn btn-sm btn-warning">Edit</a>
+                                <form action="{{ route('salaries.destroy', $salary) }}" method="POST" style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Sure?')">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+    </div>
+</div>
+@endsection
